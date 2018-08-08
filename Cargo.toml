@@ -1,0 +1,9 @@
+[package]
+name = "quiz_let_mut"
+version = "0.1.0"
+authors = ["Sebastian <vogt999@gmail.com>"]
+
+[dependencies.gtk]
+version = "0.4.1"
+features = ["v3_10"]
+

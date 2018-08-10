@@ -1,5 +1,9 @@
+mod json;
+
 use rand::prelude::*;
 use std::vec::Vec;
+use self::json::Json;
+use serde_json::Error;
 
 
 pub struct QuestionBuffer {
@@ -20,6 +24,15 @@ impl QuestionBuffer {
             done: Vec::new(),
             current: 0
         }
+    }
+
+    pub fn new_from_json() -> Result<QuestionBuffer, Error> {
+        let mut json = Json::new()?;
+        Ok(QuestionBuffer {
+            questions: json.to_vec(),
+            done: Vec::new(),
+            current: 0
+        })
     }
 
     pub fn next(&mut self) -> Option<&(String, String)> {

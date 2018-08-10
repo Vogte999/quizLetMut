@@ -1,5 +1,12 @@
 extern crate gtk;
 extern crate rand;
+extern crate serde;
+extern crate serde_json;
+
+#[macro_use]
+extern crate serde_derive;
+
+
 mod question_buffer;
 
 use gtk::prelude::*;
@@ -33,8 +40,11 @@ fn main() {
     let label: Label = builder.get_object("validation").unwrap();
     let entry: Entry = builder.get_object("answer").unwrap();
 
-    let voc = vec![("Kartoffel", "potato"), ("Baum", "tree"), ("Auto", "car"), ("Hallo", "hello"), ("Tag", "day"), ("Autobahn", "highway"), ("Änderung", "change")];
-    let qb = Arc::new(Mutex::new(QuestionBuffer::new(voc)));
+    let qb = Arc::new(Mutex::new(QuestionBuffer::new_from_json()));
+    let qb = match QuestionBuffer::new_from_json() {
+        Ok(b)   => Arc::new(Mutex::new(b)),
+        Err(msg)=> Arc::new(Mutex::new(QuestionBuffer::new(vec![("err", "err")])))
+    };
     question.set_markup(&qb.lock().unwrap().next().unwrap().0);
     label.set_markup("");
 

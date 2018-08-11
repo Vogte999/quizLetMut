@@ -8,19 +8,7 @@ pub struct Json {
 }
 
 impl Json {
-    pub fn new() -> Result<Json, Error> {
-        // Some JSON input data as a &str. Maybe this comes from the user.
-        let data = r#"{
-                    "questions": {
-                        "Kartoffel" : "potato",
-                        "Nudel"     : "noodle",
-                        "Kuchen"    : "cake",
-                        "Brot"      : "bread",
-                        "Affe"      : "monkey",
-                        "Frankreich": "France"
-                    }
-                  }"#;
-
+    pub fn new(data: &str) -> Result<Json, Error> {
         // Parse the string of data into a Person object. This is exactly the
         // same function as the one that produced serde_json::Value above, but
         // now we are asking it for a Person as output.
@@ -29,7 +17,7 @@ impl Json {
         Ok(j)
     }
 
-    pub fn to_vec(mut self) -> Vec<(String, String)> {
+    pub fn to_vec(self) -> Vec<(String, String)> {
         let mut vec: Vec<(String, String)> = Vec::new();
         for (str1, str2) in self.questions {
             vec.push((str1, str2));

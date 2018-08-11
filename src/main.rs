@@ -40,10 +40,15 @@ fn main() {
     let label: Label = builder.get_object("validation").unwrap();
     let entry: Entry = builder.get_object("answer").unwrap();
 
-    let qb = Arc::new(Mutex::new(QuestionBuffer::new_from_json()));
-    let qb = match QuestionBuffer::new_from_json() {
-        Ok(b)   => Arc::new(Mutex::new(b)),
-        Err(msg)=> Arc::new(Mutex::new(QuestionBuffer::new(vec![("err", "err")])))
+    let qb = match QuestionBuffer::new_from_json("example.json") {
+        Ok(b)   => {
+            println!("Question buffer created");
+            Arc::new(Mutex::new(b))
+        },
+        Err(msg)=> {
+            println!("Failed to create question buffer: {}", msg);
+            Arc::new(Mutex::new(QuestionBuffer::new(vec![("error", "error")])))
+        }
     };
     question.set_markup(&qb.lock().unwrap().next().unwrap().0);
     label.set_markup("");

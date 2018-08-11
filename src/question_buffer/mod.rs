@@ -3,8 +3,8 @@ mod json;
 use rand::prelude::*;
 use std::vec::Vec;
 use self::json::Json;
-use serde_json::Error;
-
+use std::fs::File;
+use std::io::prelude::*;
 
 pub struct QuestionBuffer {
     questions: Vec<(String, String)>,
@@ -26,8 +26,20 @@ impl QuestionBuffer {
         }
     }
 
-    pub fn new_from_json() -> Result<QuestionBuffer, Error> {
-        let mut json = Json::new()?;
+    pub fn new_from_json(name: &str) -> Result<QuestionBuffer, String> {
+        let mut file = match File::open(name) {
+            Ok(file)    => file,
+            Err(_msg)    => return Err(String::from("Failed to open file."))
+        };
+        let mut data = String::new();
+        match file.read_to_string(&mut data) {
+            Ok(_m)    => println!("file read."),
+            Err(_m)   => return Err(String::from("Failed to read file."))
+        }
+        let json = match Json::new(&data) {
+            Ok(json)    => json,
+            Err(_msg)    => return Err(String::from("Serialization failed."))
+        };
         Ok(QuestionBuffer {
             questions: json.to_vec(),
             done: Vec::new(),
